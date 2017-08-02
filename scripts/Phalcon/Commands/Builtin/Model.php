@@ -44,7 +44,7 @@ class Model extends Command
     {
         return [
             'name=s'          => 'Table name',
-            'configfilename=s'        => 'Name of the config file [optional, default config.php or config.ini]',
+            'configfilename=s'=> 'Name of the config file [optional, default config.php or config.ini]',
             'schema=s'        => 'Name of the schema [optional]',
             'namespace=s'     => "Model's namespace [optional]",
             'get-set'         => 'Attributes will be protected and have setters/getters [optional]',
@@ -77,7 +77,7 @@ class Model extends Command
         $modelBuilder = new ModelBuilder(
             [
                 'name'              => $name,
-                'configfilename'             => $this->getOption('configfilename'),
+                'configfilename'    => $this->getOption('configfilename'),
                 'schema'            => $this->getOption('schema'),
                 'className'         => $className,
                 'fileName'          => Text::uncamelize($className),
