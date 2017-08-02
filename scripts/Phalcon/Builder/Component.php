@@ -88,7 +88,7 @@ abstract class Component
      */
     protected function getConfig($type = null)
     {
-        return $this->path->getConfig($type);
+        return $this->path->getConfig($type, $this->options);
     }
 
     /**
