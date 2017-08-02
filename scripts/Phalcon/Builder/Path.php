@@ -47,17 +47,22 @@ class Path
      * @return \Phalcon\Config
      * @throws BuilderException
      */
-    public function getConfig($type = null)
+    public function getConfig($type = null, $options = array())
     {
         $types = ['php' => true, 'ini' => true];
         $type  = isset($types[$type]) ? $type : 'ini';
 
+        $configfilename = $options["configfilename"] ? $options["configfilename"] : (($type == "ini") ? "config.ini" : "config.php");
+        if (strpos($configfilename, ".php") === strlen($configfilename) - 4) {
+            $type = "php";
+        }
+
         foreach (['app/config/', 'config/', 'apps/config/', 'apps/frontend/config/'] as $configPath) {
-            if ('ini' == $type && file_exists($this->rootPath . $configPath . 'config.ini')) {
-                return new ConfigIni($this->rootPath . $configPath . 'config.ini');
+            if ('ini' == $type && file_exists($this->rootPath . $configPath . $configfilename)) {
+                return new ConfigIni($this->rootPath . $configPath . $configfilename);
             } else {
-                if (file_exists($this->rootPath . $configPath. 'config.php')) {
-                    $config = include($this->rootPath . $configPath . 'config.php');
+                if (file_exists($this->rootPath . $configPath. $configfilename)) {
+                    $config = include($this->rootPath . $configPath . $configfilename);
                     if (is_array($config)) {
                         $config = new Config($config);
                     }
@@ -70,6 +75,11 @@ class Path
         $directory = new RecursiveDirectoryIterator('.');
         $iterator = new RecursiveIteratorIterator($directory);
         foreach ($iterator as $f) {
+            $path = $f->getPath();
+            if (strpos($path, "./vendor/") === 0) {
+              continue;
+            }
+            
             if (preg_match('/config\.php$/i', $f->getPathName())) {
                 $config = include $f->getPathName();
                 if (is_array($config)) {
